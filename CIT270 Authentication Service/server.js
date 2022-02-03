@@ -1,23 +1,34 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
-const port = 3000;
+const https = require('https')
+const fs = require('fs')
 
-const app = express();
+const port = 3000;
+const md5 = require('md5');
+
+const app = express()
 
 app.use(bodyParser.json());
 
 app.get('/', (req, res)=>{
-res.send("Hello browser");
-});
+res.send("Hello HTTPS!")
+})
+
+https.createServer({
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.cert')
+  }, app).listen(3000, () => {
+    console.log('Listening...')
+  })
 
 app.post('/login', (req,res) =>{
     console.group(JSON.stringify(req.body));
-    if(req.body.userName =="mstong98" && req.body.password=="mikey"){
+    if(req.body.userName =="mstong98" && md5(req.body.password)=="0bf44a9634896de88678e56222c1b012"){
         res.send("Welcome!")
     } else{
         res.send("Who are you?");
     }
 });
 
-app.listen(port, ()=>{});
+//app.listen(port, ()=>{});
