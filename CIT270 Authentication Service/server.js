@@ -9,6 +9,8 @@ const md5 = require('md5');
 
 const app = express()
 
+let invalidLoginAttempts=0;
+
 app.use(express.static('public'));
 
 app.use(bodyParser.json());
@@ -26,9 +28,12 @@ https.createServer({
 
 app.post('/login', (req,res) =>{
     console.group(JSON.stringify(req.body));
-    if(req.body.userName =="mstong98" && md5(req.body.password)=="0bf44a9634896de88678e56222c1b012"){
+    if(req.body.userName =="mstong98" && md5(req.body.password)=="f5559390e1fc00f26a9f87618ae0e7c9"){
         res.send("Welcome!")
     } else{
+        invalidLoginAttempts=invalidLoginAttempts+1;
+        console.log(invalidLoginAttempts+" invalid login attempts");
+        res.status(401);//unauthorized
         res.send("Who are you?");
     }
 });
